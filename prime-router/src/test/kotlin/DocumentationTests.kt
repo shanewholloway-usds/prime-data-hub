@@ -23,6 +23,8 @@ class DocumentationTests {
         val expected = """
 **Name**:           a
 
+**Usage**:          optional
+
 **Type**:           TEXT
 
 **Format**:         
@@ -44,6 +46,8 @@ class DocumentationTests {
 
 **Name**:           a
 
+**Usage**:          optional
+
 **Type**:           TEXT
 
 **Format**:         
@@ -59,6 +63,8 @@ class DocumentationTests {
     fun `test building documentation for element with documentation value`() {
         val expected = """
 **Name**:           a
+
+**Usage**:          optional
 
 **Type**:           TEXT
 

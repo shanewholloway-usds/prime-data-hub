@@ -19,6 +19,8 @@ object DocumentationFactory {
             """
 **Name**:           ${element.name}
 
+**Usage**:          ${element.usage ?: "optional"}
+
 **Type**:           ${element.type?.name}
 
 **Format**:         ${csvField?.format ?: ""}
