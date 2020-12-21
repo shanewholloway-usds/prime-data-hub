@@ -38,7 +38,7 @@ elements:
   - name: equipment_instance_id
     csvFields: [{name: Instrument_ID}]
 
-  - name: placer_order_id
+  - name: message_id
     usage: required
     csvFields: [{name: Result_ID}]
 
@@ -215,5 +215,11 @@ elements:
   - name: reporting_facility_clia
     mapper: use(testing_lab_clia)
 
-  - name: message_id
-    mapper: use(placer_order_id)
+  - name: placer_order_id
+    mapper: use(message_id)
+
+  - name: filler_order_id
+    mapper: use(message_id)
+
+  - name: specimen_received_date_time
+    mapper: use(specimen_collection_date_time)
