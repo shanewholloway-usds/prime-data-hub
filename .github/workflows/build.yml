@@ -11,11 +11,23 @@ defaults:
     working-directory: prime-router
 
 jobs:
+  build_gate:
+    # Do not run on PRs from forks to prevent workflow abuse.
+    # NOTE: changing this condition *may* require adjusting secrets usage in
+    # the workflow steps below.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: true
+        run: true
+
   build:
     # Do not run on PRs from forks to prevent workflow abuse.
     # NOTE: changing this condition *may* require adjusting secrets usage in
     # the workflow steps below.
     if: github.event.pull_request.head.repo.full_name == github.repository
+    needs: build_gate
     runs-on: ubuntu-latest
 
     steps:
@@ -72,7 +84,7 @@ jobs:
 
   build_frontend:
     name: PRIME Data Hub Frontend
-    needs: build
+    needs: build_gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -82,7 +94,7 @@ jobs:
 
   update_docs:
     name: Update Docs
-    needs: build
+    needs: build_gate
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
