@@ -6,10 +6,6 @@ on:
     paths-ignore:
       - 'prime-router/docs/**'
 
-defaults:
-  run:
-    working-directory: prime-router
-
 jobs:
   build_gate:
     # Do not run on PRs from forks to prevent workflow abuse.
@@ -19,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo 'Build gate passed. Continuing with other build steps.'
+      - run: echo 'Build gate PASSED. Continuing with other build steps.'
 
   nobuild_gate:
     # Do not run on PRs from forks to prevent workflow abuse.
@@ -29,26 +25,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo 'Build gate blocked. Not continuing with other build steps.'
-
-  swh_test_opposite:
-    name: PRIME Data Hub Frontend
-    needs: nobuild_gate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: OPPOSITE Run Build Script
-        working-directory: frontend
-        run: bash ci_build.bash
-
+      - run: echo 'Build gate BLOCKED. Not continuing with other build steps.'
 
   build:
-    # Do not run on PRs from forks to prevent workflow abuse.
-    # NOTE: changing this condition *may* require adjusting secrets usage in
-    # the workflow steps below.
-    if: github.event.pull_request.head.repo.full_name == github.repository
     needs: build_gate
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prime-router
 
     steps:
       - uses: actions/checkout@v2
@@ -102,20 +86,14 @@ jobs:
           name: build_target
           path: prime-router/target
 
-  build_frontend:
-    name: PRIME Data Hub Frontend
-    needs: build_gate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run Build Script
-        working-directory: frontend
-        run: bash ci_build.bash
-
   update_docs:
     name: Update Docs
     needs: build_gate
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: prime-router
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -182,3 +160,17 @@ jobs:
         if: ${{ steps.check_changes.outcome == 'failure' }}
         run: |
           false
+
+  build_frontend:
+    name: PRIME Data Hub Frontend
+    needs: build_gate
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Build Script
+        run: bash ci_build.bash
+
