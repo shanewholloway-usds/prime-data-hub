@@ -70,6 +70,16 @@ jobs:
           name: build_target
           path: prime-router/target
 
+  build_frontend:
+    name: PRIME Data Hub Frontend
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Build Script
+        working-directory: frontend
+        run: bash ci_build.bash
+
   update_docs:
     name: Update Docs
     needs: build
