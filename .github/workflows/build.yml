@@ -20,7 +20,29 @@ jobs:
 
     steps:
       - name: true
-        run: true
+        run: echo 'Build gate passed. Continuing with other build steps.'
+
+  nobuild_gate:
+    # Do not run on PRs from forks to prevent workflow abuse.
+    # NOTE: changing this condition *may* require adjusting secrets usage in
+    # the workflow steps below.
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: true
+        run: echo 'Build gate blocked. Not continuing with other build steps.'
+
+  swh_test_opposite:
+    name: PRIME Data Hub Frontend
+    needs: nobuild_gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: OPPOSITE Run Build Script
+        working-directory: frontend
+        run: bash ci_build.bash
+
 
   build:
     # Do not run on PRs from forks to prevent workflow abuse.
