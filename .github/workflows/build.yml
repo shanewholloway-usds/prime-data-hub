@@ -7,7 +7,7 @@ on:
       - 'prime-router/docs/**'
 
 jobs:
-  build_gate:
+  gate_workflow:
     # Do not run on PRs from forks to prevent workflow abuse.
     # NOTE: changing this condition *may* require adjusting secrets usage in
     # the workflow steps below.
@@ -17,18 +17,8 @@ jobs:
     steps:
       - run: echo 'Build gate PASSED. Continuing with other build steps.'
 
-  nobuild_gate:
-    # Do not run on PRs from forks to prevent workflow abuse.
-    # NOTE: changing this condition *may* require adjusting secrets usage in
-    # the workflow steps below.
-    if: github.event.pull_request.head.repo.full_name != github.repository
-    runs-on: ubuntu-latest
-
-    steps:
-      - run: echo 'Build gate BLOCKED. Not continuing with other build steps.'
-
   build:
-    needs: build_gate
+    needs: gate_workflow
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -88,7 +78,7 @@ jobs:
 
   update_docs:
     name: Update Docs
-    needs: build_gate
+    needs: build
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -162,8 +152,8 @@ jobs:
           false
 
   build_frontend:
-    name: PRIME Data Hub Frontend
-    needs: build_gate
+    name: Frontend
+    needs: gate_workflow
     runs-on: ubuntu-latest
     defaults:
       run:
